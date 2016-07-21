@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="new server">
+    <featureManager>
+        <feature>zosSecurity-1.0</feature>
+        <feature>zosTransaction-1.0</feature>
+        <feature>zosLocalAdapters-1.0</feature>
+        <feature>ssl-1.0</feature>
+        <feature>restConnector-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>jsp-2.3</feature>
+        <feature>cdi-1.2</feature>
+        <feature>jca-1.7</feature>
+        <feature>jndi-1.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>ejbLite-3.2</feature>
+    </featureManager>
+    <keyStore id="defaultKeyStore" password="passw0rd" />
+    <safRegistry id="saf" />
+    <administrator-role>
+         <group>wsadmins</group>
+         <group>was</group>
+    </administrator-role>
+    <!-- :com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all -->
+    <logging
+        traceSpecification="*=info:WAS.j2c=all:RRA=all"
+        traceFileName="trace.log" maxFileSize="50" maxFiles="10" traceFormat="BASIC" />
+    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9080" httpsPort="9443" />
+    <zosLocalAdapters wolaGroup="LIBERTY" wolaName2="WOLA" wolaName3="SERVER1" useCicsTaskUserId="true" />
+    <connectionFactory id="wolaCF" jndiName="eis/legacy">
+      <properties.ola RegisterName="CICSAOR2" />
+    </connectionFactory>
+    <library id="lib">
+      <fileset dir="/usr/lpp/zWebSphere/Liberty/V8R5/usr/servers/server1/lib" includes="*.jar" />
+      <folder  dir="/usr/lpp/zWebSphere/Liberty/V8R5/usr/servers/server1/lib" />
+    </library>
+    <application location="COBCliApp.ear">
+      <classloader commonLibraryRef="lib" classProviderRef="ola" />
+      <application-bnd>
+          <security-role name="authservlet">
+              <group name="was" />
+          </security-role>
+          <security-role name="authejb">
+              <group name="was" />
+          </security-role>
+      </application-bnd>
+    </application>
+</server>
